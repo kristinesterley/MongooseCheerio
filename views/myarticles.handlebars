@@ -3,12 +3,19 @@
    
       <div id="myarticles">
       {{#each sa}}
-      <p><button>Delete</button>{{title}}</p>
+
+      	<div class="panel panel-default">
+  			<div class="panel-body">
+    	      	<a  href='{{link}}'>{{title}}<br></a><button class='manage-notes' data-id='{{_id}}'>Article Notes</button><button class='unsavearticle' data-id='{{_id}}'>Delete From Saved</button>
+  			</div>
+		</div>
+
       {{/each}}
-      	
-
-
-
       </div>
-      {{!-- <div id="notes"></div> --}}
     </div>
+
+
+
+
+
+

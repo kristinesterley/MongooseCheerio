@@ -1,0 +1,33 @@
+    <div id="wrapper">
+      <h1>Notes for Article</h1>
+   
+      <div id="notes">
+      	<div class="panel panel-default">
+	    	<div class="panel-body">
+	      		{{#each note}}
+	    	      	{{body}}<button class='delete-note' data-id='{{_id}}'>Delete Note</button><br><hr>
+	      		{{/each}}
+			</div>
+		</div>
+      </div>
+    </div>
+
+    <div id="wrapper">
+
+      	<div class="panel panel-default">
+	    	<div class="panel-body">		
+
+  				<form>
+	
+      				<textarea class="form-control" id="note-body" placeholder="New Note"></textarea>
+
+    				<button type="submit" class="btn btn-default" id="save-note">Save Note</button>
+  				</form>
+
+			</div>
+		</div>	
+	</div>
+
+
+
+

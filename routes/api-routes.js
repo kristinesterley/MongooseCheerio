@@ -10,10 +10,11 @@ var Note = require('../models/Note');
 // Routes
 // ======
 module.exports = function(app) {
+
+
 // A GET request to scrape the Scientific American website
 
   
-
 app.get("/", function(req, res) {
   // First, we grab the body of the html with request
   request("https://www.scientificamerican.com/section/news/", function(error, response, html) {
@@ -65,9 +66,6 @@ app.get("/", function(req, res) {
     }
   });
 
-  // res.render("index");
-  // Tell the browser that we finished scraping the text
-  // res.send("Scrape Complete");
 });
 
 
@@ -107,7 +105,7 @@ app.get("/savedarticles", function(req, res) {
   });
 });
 
-// Grab an article by it's ObjectId
+// Grab all notes with a given article id
 app.get("/articles/:id", function(req, res) {
   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
   Article.findOne({ "_id": req.params.id })
@@ -122,8 +120,14 @@ app.get("/articles/:id", function(req, res) {
     }
     // Otherwise, send the doc to the browser as a json object
     else {
+      console.log(doc.notes);
+      if (doc.notes.length===0){
+        doc.notes= [
+        {body: "No notes for this article."}
+        ]
+      }
 
-      res.json(doc);
+      res.render("notes", {note: doc.notes});
     }
   });
 });
@@ -150,6 +154,27 @@ app.post("/article/:id", function(req, res) {
 
 
 
+app.post("/noteremove/:id", function(req, res){
+
+  //update the article to which the note is attached - get rid of the reference to the note we are going to delete
+
+  Article.update( { _id: req.params.id }, { $pullAll: { notes: [req.body._id] } } , function(err,doc){
+
+  });
+
+  //now get rid of the note itself
+
+  Note.findByIdAndRemove(req.body._id, function(err,doc) {
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log(doc);
+        res.send(doc);
+    }
+  });
+
+});
 
 
 // Create a new note or replace an existing note - the id in req.params.id is the id of the article to which the note is attached

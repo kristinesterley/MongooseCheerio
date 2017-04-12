@@ -1,43 +1,58 @@
 
-
-// Whenever someone clicks a p tag
-$(document).on("click", "p", function() {
+//When user clicks on Article Notes for a saved Article
+$(document).on("click", ".manage-notes", function() {
   // Empty the notes from the note section
-  $("#notes").empty();
+ 
   // Save the id from the p tag
   var thisId = $(this).attr("data-id");
+  location.href = "/articles/" + thisId;
 
-  // Now make an ajax call for the Article
-  $.ajax({
-    method: "GET",
-    url: "/articles/" + thisId
-  })
-    // With that done, add the note information to the page
-    .done(function(data) {
-      console.log(data);
-      // The title of the article
-      $("#notes").append("<h2>" + data.title + "</h2>");
-      // An input to enter a new title
-      $("#notes").append("<input id='titleinput' name='title' >");
-      // A textarea to add a new note body
-      $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
-      // A button to submit a new note, with the id of the article saved to it
-      $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
-
-      // If there's a note in the article
-      if (data.note) {
-        // Place the title of the note in the title input
-        $("#titleinput").val(data.note.title);
-        // Place the body of the note in the body textarea
-        $("#bodyinput").val(data.note.body);
-      }
-    });
 });
 
-// When you click the savenote button
-$(document).on("click", "#savenote", function() {
-  // Grab the id associated with the article from the submit button
-  var thisId = $(this).attr("data-id");
+
+// When you click the delete-note button 
+$(document).on("click", ".delete-note", function() {
+  //Grab the id associated with the article from the url
+  var i = window.location.href.indexOf("es/");
+  var temp = window.location.href.substring(i + 3);
+  var articleId = temp;
+
+
+  var thisId = $(this).attr("data-id"); //this is the note id
+
+
+  // Run a POST request to delete the note and the reference to the note in the article
+  // sending the article id in params and the note id in the req.body
+  $.ajax({
+    method: "POST",
+    url: "/noteremove/" + articleId,
+    data: {
+      _id: thisId
+    }
+  })
+    // With that done
+    .done(function(data) {
+      // Log the response
+
+      location.href = "/articles/" + articleId;
+
+    });
+
+  // Remove the values entered in the textarea for note entry
+
+  $("#note-body").val("");
+});
+
+
+// When you click the save-note button
+$(document).on("click", "#save-note", function() {
+  
+  //Grab the id associated with the article from the url
+  var i = window.location.href.indexOf("es/");
+  var temp = window.location.href.substring(i + 3);
+
+
+  var thisId = temp;
 
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
@@ -45,27 +60,25 @@ $(document).on("click", "#savenote", function() {
     url: "/note/" + thisId,
     data: {
       // Value taken from title input
-      title: $("#titleinput").val(),
+      // title: $("#titleinput").val(),
       // Value taken from note textarea
-      body: $("#bodyinput").val()
+      body: $("#note-body").val()
     }
   })
     // With that done
     .done(function(data) {
       // Log the response
-
       console.log(data);
-      // Empty the notes section
-      $("#notes").empty();
+
     });
 
-  // Also, remove the values entered in the input and textarea for note entry
-  $("#titleinput").val("");
-  $("#bodyinput").val("");
+  // Remove the values entered in the textarea for note entry
+
+  $("#note-body").val("");
 });
 
 
-// When you click the savenote button
+// When you click the save article button on the Home Page
 $(document).on("click", ".savearticle", function() {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
@@ -87,8 +100,30 @@ $(document).on("click", ".savearticle", function() {
 });
 
 
-$(document).on("click", "#gotosave", function() {
-  location.href = "/savedarticles";
+// When you click the delete from saved articles button on the Saved Articles page
+$(document).on("click", ".unsavearticle", function() {
+  // Grab the id associated with the article from the submit button
+  var thisId = $(this).attr("data-id");
+
+  // Run a POST request to change the note, using what's entered in the inputs
+  $.ajax({
+    method: "POST",
+    url: "/article/" + thisId,
+    data: {
+      saved: false
+    }
+  })
+    // With that done
+    .done(function(data) {
+      // Log the response
+      console.log(data);
+      location.href = "/savedarticles";
+    });
+
 });
+
+// $(document).on("click", "#gotosave", function() {
+//   location.href = "/savedarticles";
+// });
 
 
