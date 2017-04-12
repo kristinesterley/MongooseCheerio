@@ -1,0 +1,21 @@
+    <div id="wrapper">
+      <h1>News from Scientific American</h1>
+
+      	<div id="articles">
+	      {{#each article}}
+
+			<div class="panel panel-default">
+  				<div class="panel-body">
+    	      		<a  href='{{link}}'>{{title}}<br></a><button class='savearticle' data-id='{{_id}}'>Save</button>
+  				</div>
+			</div>
+
+
+
+
+
+
+	      {{/each}}
+    	</div>
+
+    </div>	
