@@ -1,13 +1,66 @@
+//*********** Home Page ***********************//
 
-//When user clicks on Article Notes for a saved Article
-$(document).on("click", ".manage-notes", function() {
-  // Empty the notes from the note section
- 
-  // Save the id from the p tag
+// When you click the save article button on the Home Page
+$(document).on("click", ".save-article", function() {
+  // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
-  location.href = "/articles/" + thisId;
+
+  // Run a POST request to change the note, using what's entered in the inputs
+  $.ajax({
+    method: "POST",
+    url: "/article/" + thisId,
+    data: {
+      saved: true
+    }
+  })
+    // With that done
+    .done(function(data) {
+      // Log the response
+      console.log(data);
+    });
 
 });
+
+
+//*************** Saved Articles Page ************************//
+
+// When you click the delete from saved articles button on the Saved Articles page
+$(document).on("click", ".unsave-article", function() {
+  // Grab the id associated with the article from the submit button
+  var thisId = $(this).attr("data-id");
+
+  // Run a POST request to change the note, using what's entered in the inputs
+  $.ajax({
+    method: "POST",
+    url: "/article/" + thisId,
+    data: {
+      saved: false
+    }
+  })
+    // With that done
+    .done(function(data) {
+      // Log the response
+      console.log(data);
+      location.href = "/savedarticles";
+    });
+
+});
+
+
+
+
+//When user clicks on Article Notes for a saved Article on the Saved Articles page
+$(document).on("click", ".manage-notes", function() {
+ 
+  // Get the article id stored in the Article Notes button
+  var thisId = $(this).attr("data-id");
+  location.href = "/articlewithnotes/" + thisId;
+
+});
+
+
+//***************** Notes page *************************//
+
 
 
 // When you click the delete-note button 
@@ -32,15 +85,19 @@ $(document).on("click", ".delete-note", function() {
   })
     // With that done
     .done(function(data) {
-      // Log the response
+      
+      // Refresh the page
 
-      location.href = "/articles/" + articleId;
+      location.href = "/articlewithnotes/" + articleId;
+      
+      // Remove the values entered in the textarea for note entry
+
+      $("#note-body").val("");
 
     });
 
-  // Remove the values entered in the textarea for note entry
+  
 
-  $("#note-body").val("");
 });
 
 
@@ -78,52 +135,7 @@ $(document).on("click", "#save-note", function() {
 });
 
 
-// When you click the save article button on the Home Page
-$(document).on("click", ".savearticle", function() {
-  // Grab the id associated with the article from the submit button
-  var thisId = $(this).attr("data-id");
-
-  // Run a POST request to change the note, using what's entered in the inputs
-  $.ajax({
-    method: "POST",
-    url: "/article/" + thisId,
-    data: {
-      saved: true
-    }
-  })
-    // With that done
-    .done(function(data) {
-      // Log the response
-      console.log(data);
-    });
-
-});
 
 
-// When you click the delete from saved articles button on the Saved Articles page
-$(document).on("click", ".unsavearticle", function() {
-  // Grab the id associated with the article from the submit button
-  var thisId = $(this).attr("data-id");
-
-  // Run a POST request to change the note, using what's entered in the inputs
-  $.ajax({
-    method: "POST",
-    url: "/article/" + thisId,
-    data: {
-      saved: false
-    }
-  })
-    // With that done
-    .done(function(data) {
-      // Log the response
-      console.log(data);
-      location.href = "/savedarticles";
-    });
-
-});
-
-// $(document).on("click", "#gotosave", function() {
-//   location.href = "/savedarticles";
-// });
 
 

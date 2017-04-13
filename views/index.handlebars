@@ -6,14 +6,15 @@
 
 			<div class="panel panel-default">
   				<div class="panel-body">
-    	      		<a  href='{{link}}'>{{title}}<br></a><button class='savearticle' data-id='{{_id}}'>Save Article</button>
+  					<div class="container-fluid">
+  						<div class="row">
+  							 <div class="col-md-8"><a  href='{{link}}'>{{title}}<br></a></div>
+  							 <div class="col-md-1"></div>
+  							 <div class="col-md-3"><button class='save-article' data-id='{{_id}}'>Save Article</button></div>
+						</div>
+    	      		</div>			
   				</div>
 			</div>
-
-
-
-
-
 
 	      {{/each}}
     	</div>

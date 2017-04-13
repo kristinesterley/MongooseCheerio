@@ -13,6 +13,8 @@ module.exports = function(app) {
 
 
 // A GET request to scrape the Scientific American website
+// then put the articles in the database, making sure not to duplicate articles already in the database
+// then, get all of the articles in the database to display
 
   
 app.get("/", function(req, res) {
@@ -54,13 +56,23 @@ app.get("/", function(req, res) {
 
     });//end of Article.findOne
   });
+
+
     //now get them all for display
-  Article.find({}, function(error, doc) {
+
+    // after the first load, as new articles are added to the scientific american website, the most recently 
+    // added will be at the top of the list. The first load, the articles will appear roughly in the opposite order
+    // as they are on the website.  This isn't quite what I want - need to see if I can get the publication date from the
+    // website in a format that I can either use or maniuplate....
+
+
+  Article.find({},null,{sort:{date_added: -1}}, function(error, doc) {
+    console.log(doc);
     // Log any errors
     if (error) {
       console.log(error);
     }
-    // Or send the doc to the browser as a json object
+    // Send the date to the browser to display using index.handlebars
     else {
         res.render("index", {article: doc});
     }
@@ -72,22 +84,10 @@ app.get("/", function(req, res) {
 });
 
 
-// This will get the articles we scraped from the mongoDB
-app.get("/articles", function(req, res) {
-  // Grab every doc in the Articles array
-  Article.find({}, function(error, doc) {
-    // Log any errors
-    if (error) {
-      console.log(error);
-    }
-    // Or send the doc to the browser as a json object
-    else {
-      res.json(doc);
-    }
-  });
-});
 
-// This will get the saved articles 
+// This will get the saved articles and pass them on to be displayed using myarticles.handlebars
+
+
 app.get("/savedarticles", function(req, res) {
   // Grab every doc in the Articles array
   Article.find({"saved": true}, function(error, doc) {
@@ -106,7 +106,8 @@ app.get("/savedarticles", function(req, res) {
 });
 
 // Grab all notes with a given article id
-app.get("/articles/:id", function(req, res) {
+
+app.get("/articlewithnotes/:id", function(req, res) {
   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
   Article.findOne({ "_id": req.params.id })
   // ..and populate all of the notes associated with it
@@ -120,14 +121,14 @@ app.get("/articles/:id", function(req, res) {
     }
     // Otherwise, send the doc to the browser as a json object
     else {
-      console.log(doc.notes);
+
       if (doc.notes.length===0){
         doc.notes= [
         {body: "No notes for this article."}
         ]
       }
 
-      res.render("notes", {note: doc.notes});
+      res.render("notes", {paper: doc});  //doc.notes works
     }
   });
 });
@@ -153,6 +154,8 @@ app.post("/article/:id", function(req, res) {
   });
 
 
+// When deleting a note, delete the reference to the note in the article 
+// then delete the note itself
 
 app.post("/noteremove/:id", function(req, res){
 
@@ -177,7 +180,8 @@ app.post("/noteremove/:id", function(req, res){
 });
 
 
-// Create a new note or replace an existing note - the id in req.params.id is the id of the article to which the note is attached
+// Create a new note and a reference to that note in the article - the id in req.params.id is the id of the article to which the note is attached
+
 app.post("/note/:id", function(req, res) {
   // Create a new note and pass the req.body to the entry
   var newNote = new Note(req.body);

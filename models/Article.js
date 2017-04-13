@@ -24,8 +24,11 @@ var ArticleSchema = new Schema({
   notes: [{
     type: Schema.Types.ObjectId,
     ref: "Note"
-  }]
-
+  }],
+    date_added: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 // Create the Article model with the ArticleSchema

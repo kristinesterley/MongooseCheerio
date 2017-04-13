@@ -1,11 +1,11 @@
     <div id="wrapper">
-      <h1>Notes for Article</h1>
+      <h1>Notes for Article: {{paper.title}}</h1>
    
       <div id="notes">
       	<div class="panel panel-default">
 	    	<div class="panel-body">
-	      		{{#each note}}
-	    	      	{{body}}<button class='delete-note' data-id='{{_id}}'>Delete Note</button><br><hr>
+	      		{{#each paper.notes}}
+	    	      	{{this.body}}<button class='delete-note' data-id='{{this._id}}'>Delete Note</button><br><hr>
 	      		{{/each}}
 			</div>
 		</div>
