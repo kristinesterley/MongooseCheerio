@@ -7,10 +7,10 @@ var cheerio = require("cheerio");
 var Article = require('../models/Article');
 var Note = require('../models/Note');
 
+
 // Routes
 // ======
 module.exports = function(app) {
-
 
 // A GET request to scrape the Scientific American website
 // then put the articles in the database, making sure not to duplicate articles already in the database
@@ -23,14 +23,20 @@ module.exports = function(app) {
       // Then, we load that into cheerio and save it to $ for a shorthand selector
       var $ = cheerio.load(html);
       // Now, we grab every h2 within an article tag, and do the following:
-      $(".t_listing-title").each(function(i, element) {
+
+      $("article.listing-wide").each(function(i,element){
+      // $(".t_listing-title").each(function(i, element) {
 
         // Save an empty result object
         var result = {};
 
         // Add the text and href of every link, and save them as properties of the result object
-        result.title = $(this).children("a").text();
-        result.link = $(this).children("a").attr("href");
+        // result.title = $(this).children("a").text();
+        // result.link = $(this).children("a").attr("href");
+
+        result.title = $(element).find("h2.t_listing-title").find("a").text();
+        result.link = $(element).find("h2.t_listing-title").find("a").attr("href");
+        result.img = $(element).find("div.listing-wide__thumb").find("img").attr("src");
 
         //check to see if the article is already in the database
 
@@ -55,7 +61,7 @@ module.exports = function(app) {
           } //end if error
 
         });//end of Article.findOne
-      }); //end .each
+      }); //end 
 
 
       //now get them all for display
@@ -65,6 +71,8 @@ module.exports = function(app) {
       // as they are on the website.  This isn't quite what I want - need to see if I can get the publication date from the
       // website in a format that I can either use or maniuplate....
 
+     //having an asynchronous issue here! This is a hack, but I don't know how to resolve this problem yet.
+     setTimeout(function(){
 
       Article.find({},null,{sort:{date_added: -1}}, function(error, doc) {
         console.log(doc);
@@ -76,7 +84,9 @@ module.exports = function(app) {
         else {
             res.render("index", {article: doc});
         }
-      });//end find
+      });
+    },1000);
+
 
     });//end request
 

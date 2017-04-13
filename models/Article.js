@@ -15,11 +15,15 @@ var ArticleSchema = new Schema({
     type: String,
     required: true
   },
+  img:{
+    type: String,
+    required: true
+  },
   saved: {
     type: Boolean,
     default: false
   },
-  // This only saves one note's ObjectId, ref refers to the Note model
+ //ref refers to the Note model
 
   notes: [{
     type: Schema.Types.ObjectId,
