@@ -85,7 +85,7 @@ module.exports = function(app) {
             res.render("index", {article: doc});
         }
       });
-    },1000);
+    },1000);  //wait one second to let posting to the database finish before getting all of the documents for display
 
 
     });//end request
@@ -108,6 +108,12 @@ module.exports = function(app) {
       }
       // Or send the doc to the browser as a json object
       else {
+        console.log("*************");
+        console.log(doc);
+        if (doc.length==0){
+          //tell user that none have been saved
+          return;
+        }
 
         res.render("myarticles", {sa: doc});
         // res.json(doc); //I want to send doc to save.handlebar and display what's in doc  ********************
