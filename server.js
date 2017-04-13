@@ -1,6 +1,3 @@
-/* Showing Mongoose's "Populated" Method (18.3.8)
- * INSTRUCTOR ONLY
- * =============================================== */
 
 // Dependencies
 var express = require("express");
@@ -27,7 +24,6 @@ var Article = require("./models/Article.js");
 
 // Set mongoose to leverage built in JavaScript ES6 Promises
 mongoose.Promise = Promise;
-
 
 
 // Use morgan and body parser with our app

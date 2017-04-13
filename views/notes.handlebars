@@ -1,5 +1,7 @@
     <div id="wrapper">
-      <h1>Notes for Article: {{paper.title}}</h1>
+      <h3>Notes for Article Titled: </h1>
+      <h2 id="paper" data-id={{paper._id}}>{{paper.title}}</h3>
+      <br>
    
       <div id="notes">
       	<div class="panel panel-default">
@@ -21,7 +23,7 @@
 	
       				<textarea class="form-control" id="note-body" placeholder="New Note"></textarea>
 
-    				<button type="submit" class="btn btn-default" id="save-note">Save Note</button>
+    				<button type="submit" id="save-note">Save Note</button>
   				</form>
 
 			</div>

@@ -1,6 +1,6 @@
     * {
       box-sizing: border-box;
-
+      border-radius: 0 !important;
       }
 
 
@@ -11,31 +11,40 @@
         margin-right: auto;
         padding-top: 5%;
       }
+
       nav {
         font-size: 20px;
       }
 
-      #articles {
+      #articles, #myarticles, #notes {
         display: inline-block;
         overflow: auto;
         width: 100%;
+      }
+
+      #articles {
         font-size: 20px;
       }
 
-      #myarticles {
-        display: inline-block;
-        overflow: auto;
-        width: 100%;
+      #myarticles, #notes, #note-body {
         font-size: 16px;
       }
 
       #note-body {
         min-height: 100px;
-
       }
-      .save-article, .unsave-article, .manage-notes, .delete-note {
+
+      .unsave-article {
         clear:both;
         float: right;
-       /* margin:10px;*/
+      }
+
+      .manage-notes {
+        margin-right: 10px;
+      }
+
+      .save-article, .delete-note, #save-note {
+        clear:both;
+        float: right;
       }
 

@@ -22,6 +22,8 @@ $(document).on("click", ".save-article", function() {
 });
 
 
+
+
 //*************** Saved Articles Page ************************//
 
 // When you click the delete from saved articles button on the Saved Articles page
@@ -47,8 +49,6 @@ $(document).on("click", ".unsave-article", function() {
 });
 
 
-
-
 //When user clicks on Article Notes for a saved Article on the Saved Articles page
 $(document).on("click", ".manage-notes", function() {
  
@@ -59,20 +59,19 @@ $(document).on("click", ".manage-notes", function() {
 });
 
 
+
+
 //***************** Notes page *************************//
 
 
 
 // When you click the delete-note button 
 $(document).on("click", ".delete-note", function() {
-  //Grab the id associated with the article from the url
-  var i = window.location.href.indexOf("es/");
-  var temp = window.location.href.substring(i + 3);
-  var articleId = temp;
+  //Grab the id associated with the article from the data attribute where we stashed it
 
+  var articleId = $("#paper").attr("data-id");
 
   var thisId = $(this).attr("data-id"); //this is the note id
-
 
   // Run a POST request to delete the note and the reference to the note in the article
   // sending the article id in params and the note id in the req.body
@@ -84,32 +83,22 @@ $(document).on("click", ".delete-note", function() {
     }
   })
     // With that done
-    .done(function(data) {
-      
+    .done(function(data) {     
       // Refresh the page
-
-      location.href = "/articlewithnotes/" + articleId;
-      
+      location.href = "/articlewithnotes/" + articleId;   
       // Remove the values entered in the textarea for note entry
-
       $("#note-body").val("");
-
     });
-
-  
-
 });
 
 
 // When you click the save-note button
 $(document).on("click", "#save-note", function() {
   
-  //Grab the id associated with the article from the url
-  var i = window.location.href.indexOf("es/");
-  var temp = window.location.href.substring(i + 3);
+  //Grab the id associated with the article from the data attribute where we stashed it
 
+  var thisId = $("#paper").attr("data-id");
 
-  var thisId = temp;
 
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
@@ -133,9 +122,5 @@ $(document).on("click", "#save-note", function() {
 
   $("#note-body").val("");
 });
-
-
-
-
 
 
