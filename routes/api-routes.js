@@ -22,17 +22,16 @@ module.exports = function(app) {
     request("https://www.scientificamerican.com/section/news/", function(error, response, html) {
       // Then, we load that into cheerio and save it to $ for a shorthand selector
       var $ = cheerio.load(html);
-      // Now, we grab every h2 within an article tag, and do the following:
+      // Now, we grab article tag with a class of listing-wide, and do the following:
 
       $("article.listing-wide").each(function(i,element){
-      // $(".t_listing-title").each(function(i, element) {
+
 
         // Save an empty result object
         var result = {};
 
-        // Add the text and href of every link, and save them as properties of the result object
-        // result.title = $(this).children("a").text();
-        // result.link = $(this).children("a").attr("href");
+        // Add the title text and href and img src of every article, and save them as properties of the result object
+
 
         result.title = $(element).find("h2.t_listing-title").find("a").text();
         result.link = $(element).find("h2.t_listing-title").find("a").attr("href");
@@ -43,7 +42,7 @@ module.exports = function(app) {
         Article.findOne({ "title": result.title }, function(error, doc) {
           if (!doc){
         //no matching article
-        // Using our Article model, create a new entry
+        // Using our Article model, create a new db record
         // This effectively passes the result object to the entry (and the title and link)
             var entry = new Article(result);
 
@@ -61,7 +60,7 @@ module.exports = function(app) {
           } //end if error
 
         });//end of Article.findOne
-      }); //end 
+      }); //end .each
 
 
       //now get them all for display
@@ -108,15 +107,14 @@ module.exports = function(app) {
       }
       // Or send the doc to the browser as a json object
       else {
-        console.log("*************");
-        console.log(doc);
+
         if (doc.length==0){
           //tell user that none have been saved
+          //this is awkward here - we're just staying on the home page without notifying the user
           return;
         }
 
         res.render("myarticles", {sa: doc});
-        // res.json(doc); //I want to send doc to save.handlebar and display what's in doc  ********************
       }
     });
   });
@@ -143,7 +141,8 @@ module.exports = function(app) {
           {body: "No notes for this article."}
           ]
         }
-
+        //in the case that there are no notes, because we are sending this to handlebars, the No notes message
+        //get a delete button - inappropriate. I need to handle this somehow....
         res.render("notes", {paper: doc});  //doc.notes works
       }
     });
@@ -188,7 +187,7 @@ module.exports = function(app) {
           console.log(err);
       }
       else {
-          console.log(doc);
+          //send the updated article back to app.js so that we can use it to update the browser
           res.send(doc);
       }
     });
@@ -199,7 +198,7 @@ module.exports = function(app) {
   // Create a new note and a reference to that note in the article - the id in req.params.id is the id of the article to which the note is attached
 
   app.post("/note/:id", function(req, res) {
-    // Create a new note and pass the req.body to the entry
+    // Create a new note using the note text passed in during the ajax call
     var newNote = new Note(req.body);
 
     // And save the new note the db
@@ -210,20 +209,31 @@ module.exports = function(app) {
       }
       // Otherwise
       else {
-        // Use the article id to find and update it's note
+        // Use the article id to find and update it's notes array using the _id of the note that you just added to the db
+        // That _id was just passed back to you after the save in doc._id
+
         Article.findOneAndUpdate({ "_id": req.params.id }, { $push: {"notes": doc._id }}, {new: true}, function(err,doc){
-       
           // Log any errors
           if (err) {
+            console.log("there was an error");
             res.send(err);
           }
           else {
-            // Or send the document to the browser
-            res.send(doc);
+
+            // Or send the document to the browser 
+            res.send(doc);  
+
+            //if I don't send anything back, the .done in the ajax call will not trigger
+            //for some reason, if I do not send anything back, the page refreshes anyway and dipslays the updated notes.
           }
+          
         });//end findOneAndUpdate
+        
       } //end else
+     
     }); //end newNote.save
+    
   }); //end app.post
+  
 
 };//end of export

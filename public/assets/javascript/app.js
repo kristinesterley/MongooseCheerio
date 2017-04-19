@@ -5,7 +5,7 @@ $(document).on("click", ".save-article", function() {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
 
-  // Run a POST request to change the note, using what's entered in the inputs
+  // Run a POST request to update the article's saved flag to true
   $.ajax({
     method: "POST",
     url: "/article/" + thisId,
@@ -15,6 +15,7 @@ $(document).on("click", ".save-article", function() {
   })
     // With that done
     .done(function(data) {
+      alert("Article saved!");
       // Log the response
       console.log(data);
     });
@@ -31,7 +32,7 @@ $(document).on("click", ".unsave-article", function() {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
 
-  // Run a POST request to change the note, using what's entered in the inputs
+  // Run a POST request to update the article's saved flag to false
   $.ajax({
     method: "POST",
     url: "/article/" + thisId,
@@ -83,7 +84,7 @@ $(document).on("click", ".delete-note", function() {
     }
   })
     // With that done
-    .done(function(data) {     
+    .done(function(data) {    
       // Refresh the page
       location.href = "/articlewithnotes/" + articleId;   
       // Remove the values entered in the textarea for note entry
@@ -100,27 +101,26 @@ $(document).on("click", "#save-note", function() {
   var thisId = $("#paper").attr("data-id");
 
 
-  // Run a POST request to change the note, using what's entered in the inputs
+  // Run a POST request to save the note, using the article id and the user's note text
   $.ajax({
     method: "POST",
     url: "/note/" + thisId,
     data: {
-      // Value taken from title input
-      // title: $("#titleinput").val(),
       // Value taken from note textarea
       body: $("#note-body").val()
     }
   })
-    // With that done
+    //With that done
     .done(function(data) {
-      // Log the response
-      console.log(data);
+      // Refresh the page
+      location.href = "/articlewithnotes/" + articleId;   
+       // Remove the values entered in the textarea for note entry
+
+      $("#note-body").val("");
 
     });
 
-  // Remove the values entered in the textarea for note entry
 
-  $("#note-body").val("");
 });
 
 
